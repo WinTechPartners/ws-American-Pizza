@@ -1,0 +1,992 @@
+<!doctype html>
+<!-- STUDIO NOTES
+1. iPhone notch + Safari chrome — fixed header sat under the status bar and backdrop-filter was ignored, so the lockup looked broken; height/padding now include safe-area insets and -webkit-backdrop-filter on header, sticky bar, forms, and map card.
+2. Anchor scroll hid every section title under the 80px bar — Story/Menu/Order/Reserve landed cropped; scroll-margin-top on sections and form cards restores the intended first read.
+3. Process step 02 image 404’d (bogus Unsplash id + onerror flash) — swapped to the working fallback already in the document so the three-day story doesn’t show a broken frame.
+4. Hero collapsed on older Android — 100svh-only left a short crop; 100vh fallback plus 100svh/100dvh keeps the cheese-pull and CTAs in the first screen.
+5. Mobile drawer overflowed short viewports and leaked focus — overflow scrolling, dialog semantics, inert main/footer, tab cycle, Escape returns focus to the burger.
+6. Touch sticky-hovers and grain jank — hover lifts gated to (hover:hover), film grain contained/GPU-layered and removed for reduced-motion, so scroll stays smooth.
+7. Conversion path had no GrabFood URL and forms dropped focus on errors — GrabFood is a real outbound CTA; inputs have id/for, described errors, min date, and first-invalid focus.
+8. Meta/perf/a11y pass — color-scheme, theme-color, og/twitter completeness, JSON-LD numbers/sameAs, lazy + srcset, trimmed font weights, non-blocking font stylesheet, input focus rings, contrast bump on 11px meta type.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>American Pizza Da Nang | True American Pies by Mike</title>
+  <meta name="description" content="Da Nang’s true American pizza. Three-day fermented dough, 330°C crust, imported mozzarella, loaded toppings. 72/9 Nguyễn Văn Thoại, Ngũ Hành Sơn. Order, GrabFood, or reserve a table.">
+  <link rel="canonical" href="https://americanpizza.vn/">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#0c0908">
+  <meta name="color-scheme" content="dark">
+  <meta name="format-detection" content="telephone=yes">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="American Pizza Da Nang">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="American Pizza Da Nang | True American Pies by Mike">
+  <meta property="og:description" content="California-size pies in Ngũ Hành Sơn. Stretchy imported mozzarella, three-day dough, 330°C crunch. Dine in, takeaway, or order now.">
+  <meta property="og:url" content="https://americanpizza.vn/">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&h=630&q=80">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Generously topped American pizza with blistered crust and melted mozzarella">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="American Pizza Da Nang | True American Pies by Mike">
+  <meta name="twitter:description" content="The stretch. The crunch. The pie you actually meant. Order or dine in near My Khe Beach.">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&h=630&q=80">
+  <meta name="twitter:image:alt" content="Generously topped American pizza with blistered crust and melted mozzarella">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23C23B22'/%3E%3Ccircle cx='32' cy='32' r='22' fill='%23F0C14B'/%3E%3Ccircle cx='32' cy='32' r='14' fill='%23C23B22'/%3E%3Ccircle cx='24' cy='26' r='3' fill='%231A1410'/%3E%3Ccircle cx='38' cy='24' r='2.5' fill='%231A1410'/%3E%3Ccircle cx='40' cy='36' r='3' fill='%231A1410'/%3E%3Ccircle cx='28' cy='38' r='2.2' fill='%231A1410'/%3E%3C/svg%3E">
+  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=2000&q=80" imagesrcset="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80 800w, https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1400&q=80 1400w, https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=2000&q=80 2000w" imagesizes="100vw" fetchpriority="high">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=Outfit:wght@400;500;600&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Restaurant","name":"American Pizza","url":"https://americanpizza.vn/","image":"https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&h=630&q=80","telephone":"+84905759986","servesCuisine":["American","Pizza"],"priceRange":"160000-340000 VND","address":{"@type":"PostalAddress","streetAddress":"72/9 Nguyễn Văn Thoại","addressLocality":"Ngũ Hành Sơn","addressRegion":"Da Nang","addressCountry":"VN"},"geo":{"@type":"GeoCoordinates","latitude":16.0471,"longitude":108.248},"openingHours":"Mo-Su 14:00-23:00","openingHoursSpecification":{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"opens":"14:00","closes":"23:00"},"aggregateRating":{"@type":"AggregateRating","ratingValue":4.9,"reviewCount":264,"bestRating":5},"founder":{"@type":"Person","name":"Mike"},"acceptsReservations":true,"hasMenu":"https://americanpizza.vn/#menu","sameAs":["https://www.facebook.com/p/American-Pizza-61578195429921/","https://www.tiktok.com/@pizzamy.vn"]}
+  </script>
+  <style>
+    :root {
+      --void: #0c0908;
+      --ink: #14100d;
+      --paper: #f3e8d8;
+      --cream: #faf4eb;
+      --tomato: #c23b22;
+      --tomato-hot: #dc4a30;
+      --tomato-deep: #8a2418;
+      --cheese: #e0b24a;
+      --gold: #e2b84a;
+      --gold-soft: #c9a056;
+      --bark: #3a2a22;
+      --muted: #c4b4a4;
+      --line: rgba(243, 232, 216, 0.1);
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --tap: 48px;
+      --header: 80px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --gutter: clamp(1.1rem, 4vw, 3rem);
+      --display: "Bebas Neue", Impact, sans-serif;
+      --sans: Outfit, ui-sans-serif, system-ui, sans-serif;
+      --serif: "Instrument Serif", "Times New Roman", serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; color-scheme: dark; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: var(--sans);
+      background: var(--void);
+      color: var(--paper);
+      line-height: 1.6;
+      font-weight: 400;
+      overflow-x: hidden;
+      letter-spacing: 0.01em;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+    ::selection { background: var(--tomato); color: #fff; }
+    img { max-width: 100%; display: block; height: auto; background: #1a1410; }
+    a { color: inherit; }
+    button, input, select, textarea { font-family: inherit; }
+    h1, h2, h3, .display {
+      font-family: var(--display);
+      font-weight: 400;
+      letter-spacing: 0.03em;
+      line-height: 0.88;
+      margin: 0;
+    }
+    .skip {
+      position: absolute; left: 1rem; top: -5rem; background: var(--gold); color: var(--void);
+      padding: 0.75rem 1rem; z-index: 200; border-radius: 2px;
+    }
+    .skip:focus { top: calc(var(--safe-top) + 1rem); }
+    :focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+    }
+    .grain {
+      pointer-events: none; position: fixed; inset: 0; z-index: 70; opacity: 0.035;
+      mix-blend-mode: overlay; contain: strict;
+      transform: translateZ(0);
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+    header.site {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+      height: calc(var(--header) + var(--safe-top));
+      display: flex; align-items: center; justify-content: space-between;
+      padding: var(--safe-top) max(var(--gutter), env(safe-area-inset-right, 0px)) 0 max(var(--gutter), env(safe-area-inset-left, 0px));
+      background: linear-gradient(180deg, rgba(12,9,8,0.72), rgba(12,9,8,0));
+      border-bottom: 1px solid transparent;
+      transition: background 0.45s var(--ease), border-color 0.45s var(--ease), -webkit-backdrop-filter 0.45s var(--ease), backdrop-filter 0.45s var(--ease), height 0.45s var(--ease);
+    }
+    header.site.scrolled {
+      height: calc(68px + var(--safe-top));
+      background: rgba(12, 9, 8, 0.88);
+      -webkit-backdrop-filter: blur(18px) saturate(1.2);
+      backdrop-filter: blur(18px) saturate(1.2);
+      border-bottom-color: var(--line);
+    }
+    .brand {
+      display: flex; align-items: center; gap: 0.85rem; text-decoration: none; color: var(--cream);
+      min-height: var(--tap);
+    }
+    .brand-mark {
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      background:
+        radial-gradient(circle at 32% 30%, #f3d27a 0 18%, transparent 19%),
+        radial-gradient(circle at 35% 35%, var(--gold), var(--tomato) 60%, #6e1a12);
+      box-shadow: 0 0 0 1px rgba(226, 184, 74, 0.45), 0 8px 20px rgba(0,0,0,0.35);
+      position: relative;
+    }
+    .brand-mark::after {
+      content: "";
+      position: absolute; inset: 9px;
+      border: 1.5px solid rgba(12,9,8,0.35);
+      border-radius: 50%;
+    }
+    .brand-text { display: flex; flex-direction: column; line-height: 1; }
+    .brand-text strong { font-family: var(--display); font-size: 1.45rem; letter-spacing: 0.08em; }
+    .brand-text span { font-size: 0.62rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); margin-top: 0.28rem; font-weight: 500; }
+    nav.desk { display: none; gap: 2rem; align-items: center; }
+    nav.desk a:not(.btn) {
+      text-decoration: none; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--paper); opacity: 0.78; font-weight: 500;
+      position: relative; padding: 0.55rem 0;
+    }
+    nav.desk a:not(.btn)::after {
+      content: ""; position: absolute; left: 0; right: 100%; bottom: 6px; height: 1px;
+      background: var(--gold); transition: right 0.35s var(--ease);
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      min-height: var(--tap); padding: 0.75rem 1.5rem; border: 0; cursor: pointer;
+      text-decoration: none; border-radius: 999px; font-weight: 600; letter-spacing: 0.08em;
+      font-size: 0.82rem; text-transform: uppercase;
+      transition: transform 0.35s var(--ease), background 0.35s var(--ease), box-shadow 0.35s var(--ease), border-color 0.35s var(--ease), color 0.35s var(--ease);
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary {
+      background: var(--tomato); color: #fff;
+      box-shadow: 0 12px 32px rgba(194, 59, 34, 0.38);
+    }
+    .btn-ghost {
+      background: transparent; color: var(--cream);
+      border: 1px solid rgba(243, 232, 216, 0.28);
+    }
+    .btn-gold { background: var(--gold); color: var(--void); }
+    .burger {
+      width: 48px; height: 48px; border: 0; background: transparent; color: var(--cream);
+      display: grid; place-items: center; cursor: pointer; position: relative; z-index: 61;
+    }
+    .burger span, .burger span::before, .burger span::after {
+      display: block; width: 22px; height: 1.5px; background: currentColor; position: relative;
+      transition: transform 0.35s var(--ease), opacity 0.35s var(--ease), top 0.35s var(--ease);
+    }
+    .burger span::before, .burger span::after { content: ""; position: absolute; left: 0; }
+    .burger span::before { top: -7px; }
+    .burger span::after { top: 7px; }
+    .burger[aria-expanded="true"] span { background: transparent; }
+    .burger[aria-expanded="true"] span::before { top: 0; transform: rotate(45deg); }
+    .burger[aria-expanded="true"] span::after { top: 0; transform: rotate(-45deg); }
+    .mobile-nav {
+      display: flex; position: fixed; inset: 0; z-index: 55;
+      background: rgba(12, 9, 8, 0.97);
+      padding: calc(var(--header) + var(--safe-top) + 1.5rem) max(1.75rem, env(safe-area-inset-right, 0px)) calc(2rem + var(--safe-bottom)) max(1.75rem, env(safe-area-inset-left, 0px));
+      flex-direction: column; gap: 0.35rem;
+      opacity: 0; pointer-events: none; transform: translateY(-8px);
+      transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+      overflow-y: auto; -webkit-overflow-scrolling: touch;
+    }
+    .mobile-nav[hidden] { display: none !important; }
+    .mobile-nav.open { opacity: 1; pointer-events: auto; transform: none; }
+    .mobile-nav a {
+      font-family: var(--display); font-size: clamp(2.1rem, 9vw, 3.4rem); text-decoration: none; color: var(--cream);
+      letter-spacing: 0.04em; line-height: 1.05;
+      border-bottom: 1px solid var(--line); padding: 0.35rem 0 0.55rem;
+    }
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      min-height: 100svh;
+      min-height: 100dvh;
+      display: grid; place-items: end stretch;
+      overflow: hidden;
+    }
+    .hero-media { position: absolute; inset: 0; }
+    .hero-media img {
+      width: 100%; height: 100%; object-fit: cover; object-position: center 62%;
+      animation: ken 22s ease-in-out infinite alternate;
+      will-change: transform;
+    }
+    @keyframes ken { from { transform: scale(1); } to { transform: scale(1.08); } }
+    .hero-shade {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(180deg, rgba(12,9,8,0.35) 0%, rgba(12,9,8,0.12) 32%, rgba(12,9,8,0.55) 62%, rgba(12,9,8,0.96) 100%),
+        radial-gradient(ellipse at 78% 38%, transparent 10%, rgba(12,9,8,0.5) 100%),
+        linear-gradient(90deg, rgba(12,9,8,0.45), transparent 42%);
+    }
+    .hero-inner {
+      position: relative; z-index: 2;
+      padding: 0 max(clamp(1.2rem, 5vw, 4.5rem), env(safe-area-inset-right, 0px)) clamp(2.8rem, 7vh, 5.2rem) max(clamp(1.2rem, 5vw, 4.5rem), env(safe-area-inset-left, 0px));
+      max-width: 1360px; width: 100%; margin: 0 auto;
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 0.75rem;
+      font-size: 0.7rem; letter-spacing: 0.26em; text-transform: uppercase;
+      color: var(--gold); font-weight: 600; margin-bottom: 1.1rem;
+    }
+    .eyebrow::before {
+      content: ""; width: 2.2rem; height: 1px; background: var(--gold); display: block;
+    }
+    .hero h1 {
+      font-size: clamp(3.4rem, 13.5vw, 9.4rem);
+      max-width: 12ch;
+      color: var(--cream);
+      text-wrap: balance;
+    }
+    .hero h1 em { font-style: normal; color: var(--gold); }
+    .hero-lead {
+      max-width: 36rem; font-family: var(--serif); font-size: clamp(1.15rem, 2.1vw, 1.45rem);
+      color: #eadccb; margin: 1.35rem 0 2rem; font-weight: 400; line-height: 1.45;
+      font-style: italic;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+    .hero-meta {
+      margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 0.4rem 0;
+      font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+      border-top: 1px solid var(--line); padding-top: 1.15rem;
+    }
+    .hero-meta span {
+      padding-right: 1.5rem; margin-right: 1.5rem;
+      border-right: 1px solid var(--line);
+    }
+    .hero-meta span:last-child { border-right: 0; margin-right: 0; padding-right: 0; }
+    .hero-meta strong { color: var(--cream); font-weight: 600; display: block; font-size: 0.84rem; letter-spacing: 0.12em; margin-bottom: 0.2rem; }
+    .scroll-cue {
+      position: absolute; right: clamp(1.2rem, 5vw, 4.5rem); bottom: 2rem; z-index: 2;
+      font-size: 0.64rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted);
+      writing-mode: vertical-rl; display: none;
+    }
+    section { padding: clamp(4.5rem, 11vw, 8.5rem) max(clamp(1.2rem, 5vw, 4.5rem), env(safe-area-inset-left, 0px)); padding-right: max(clamp(1.2rem, 5vw, 4.5rem), env(safe-area-inset-right, 0px)); }
+    #main section[id],
+    #reserve,
+    #order-card {
+      scroll-margin-top: calc(var(--header) + var(--safe-top) + 12px);
+    }
+    .wrap { max-width: 1240px; margin: 0 auto; }
+    .reveal {
+      opacity: 0; transform: translateY(36px);
+      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+    }
+    .reveal.in { opacity: 1; transform: none; }
+    .sec-kicker {
+      color: var(--gold); letter-spacing: 0.24em; text-transform: uppercase;
+      font-size: 0.7rem; font-weight: 600; display: flex; align-items: center; gap: 0.7rem;
+    }
+    .sec-kicker::before { content: ""; width: 1.6rem; height: 1px; background: currentColor; }
+    .sec-title { font-size: clamp(2.8rem, 7.2vw, 5.6rem); margin: 0.55rem 0 1.15rem; max-width: 16ch; }
+    .story { display: grid; gap: 3rem; align-items: center; }
+    .story p { color: #d5c4b3; font-size: 1.08rem; margin: 0 0 1.15rem; line-height: 1.7; max-width: 42rem; }
+    .pull {
+      font-family: var(--serif); font-style: italic; font-size: clamp(1.35rem, 2.4vw, 1.7rem);
+      color: var(--cream); line-height: 1.35; border-left: 2px solid var(--tomato);
+      padding: 0.2rem 0 0.2rem 1.2rem; margin: 1.6rem 0 1.7rem; max-width: 34rem;
+    }
+    .story-photo {
+      position: relative; overflow: hidden; min-height: 320px;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.4);
+      min-width: 0;
+    }
+    .story-photo::after {
+      content: ""; position: absolute; inset: 0;
+      box-shadow: inset 0 0 0 1px rgba(243,232,216,0.12);
+      pointer-events: none;
+    }
+    .story-photo img { width: 100%; height: 100%; object-fit: cover; min-height: 460px; transform: scale(1.02); transition: transform 1.2s var(--ease); }
+    .story-photo figcaption {
+      position: absolute; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(transparent, rgba(12,9,8,0.85));
+      padding: 2.4rem 1.2rem 1.1rem;
+      font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold);
+    }
+    .process { background: #110d0b; position: relative; }
+    .process .lede { max-width: 38rem; color: #cbb9a8; font-family: var(--serif); font-size: 1.2rem; line-height: 1.5; font-style: italic; margin: 0; }
+    .steps { display: grid; gap: 1.1rem; margin-top: 3rem; }
+    .step {
+      background: var(--ink); border: 1px solid var(--line); overflow: hidden;
+      position: relative; min-width: 0;
+    }
+    .step img {
+      width: 100%; height: 240px; object-fit: cover;
+      transition: transform 1s var(--ease);
+    }
+    .step-body { padding: 1.5rem 1.45rem 1.7rem; position: relative; }
+    .step-num {
+      color: var(--tomato); font-family: var(--display); font-size: 1.15rem;
+      letter-spacing: 0.18em; position: absolute; right: 1.2rem; top: -1.6rem;
+      background: var(--ink); padding: 0 0.35rem;
+    }
+    .step h3 { font-size: 2.15rem; margin: 0.15rem 0 0.55rem; }
+    .step p { margin: 0; color: #cbb9a8; line-height: 1.6; }
+    .menu-sec { background: var(--cream); color: var(--ink); color-scheme: light; }
+    .menu-sec .sec-kicker { color: var(--tomato); }
+    .menu-sec .sec-title { color: var(--void); max-width: 18ch; }
+    .menu-intro { color: #4e4036; max-width: 40rem; font-size: 1.05rem; line-height: 1.65; }
+    .pizzas {
+      display: grid; gap: 1.15rem; margin-top: 2.8rem;
+    }
+    .pie {
+      background: #fff; overflow: hidden;
+      box-shadow: 0 18px 40px rgba(58, 42, 34, 0.07);
+      display: flex; flex-direction: column;
+      border: 1px solid rgba(58,42,34,0.06);
+      transition: transform 0.45s var(--ease), box-shadow 0.45s var(--ease);
+      min-width: 0;
+    }
+    .pie-media { overflow: hidden; position: relative; }
+    .pie img { width: 100%; height: 250px; object-fit: cover; transition: transform 1s var(--ease); }
+    .pie-body { padding: 1.25rem 1.3rem 1.4rem; display: flex; flex-direction: column; gap: 0.4rem; flex: 1; }
+    .pie h3 { font-size: 2.05rem; color: var(--void); letter-spacing: 0.04em; }
+    .pie p { margin: 0; color: #5a4b40; font-size: 0.95rem; line-height: 1.5; }
+    .prices { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: auto; padding-top: 1rem; }
+    .tag {
+      font-size: 0.72rem; font-weight: 600; background: #f3e8d8; color: var(--void);
+      padding: 0.4rem 0.7rem; border-radius: 999px; letter-spacing: 0.04em;
+    }
+    .tag strong { color: var(--tomato-deep); }
+    .pie-feature {
+      display: grid;
+    }
+    .pie-feature img { height: 220px; }
+    .reviews { background: var(--void); }
+    .score-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin: 2rem 0 2.4rem;
+      background: var(--line); border: 1px solid var(--line);
+    }
+    .score {
+      background: var(--void); padding: 1.4rem 1.3rem 1.5rem;
+    }
+    .score b { font-family: var(--display); font-size: clamp(3.4rem, 8vw, 5.4rem); color: var(--gold); display: block; line-height: 0.85; letter-spacing: 0.02em; }
+    .score span { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-top: 0.55rem; }
+    .quotes { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+    blockquote.q {
+      margin: 0; padding: 1.7rem 1.6rem; background: var(--ink); min-width: 0;
+    }
+    blockquote.q p {
+      margin: 0 0 1rem; font-size: clamp(1.2rem, 2vw, 1.4rem); color: var(--cream);
+      font-family: var(--serif); font-style: italic; line-height: 1.4;
+    }
+    blockquote.q cite { font-style: normal; font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+    .visit { background: #110d0b; }
+    .visit-grid { display: grid; gap: 1.75rem; margin-top: 2.4rem; }
+    .map-card {
+      overflow: hidden; min-height: 300px; position: relative;
+      background: #2a211c; min-width: 0;
+    }
+    .map-card img { width: 100%; height: 100%; object-fit: cover; min-height: 340px; filter: saturate(0.78) contrast(1.08); transform: scale(1.02); }
+    .map-card .map-overlay {
+      position: absolute; inset: auto 1.1rem 1.1rem 1.1rem;
+      background: rgba(12,9,8,0.9); padding: 1.2rem 1.25rem;
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--line);
+    }
+    .map-overlay strong { display: block; font-size: 1.05rem; letter-spacing: 0.02em; }
+    .info-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0; min-width: 0; }
+    .info-list > div {
+      display: grid; gap: 0.3rem;
+      padding: 1.05rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .info-list dt { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+    .info-list dd { margin: 0; font-size: 1.08rem; }
+    .info-list a { color: var(--cream); text-decoration: none; border-bottom: 1px solid rgba(226,184,74,0.4); }
+    .cta-band {
+      background:
+        radial-gradient(ellipse at 20% 0%, rgba(224,74,48,0.35), transparent 50%),
+        linear-gradient(165deg, #9a281c, #5c1610);
+      padding: clamp(4rem, 9vw, 6.5rem) max(clamp(1.2rem, 5vw, 4.5rem), env(safe-area-inset-left, 0px));
+      padding-right: max(clamp(1.2rem, 5vw, 4.5rem), env(safe-area-inset-right, 0px));
+      text-align: center;
+    }
+    .cta-band h2 { font-size: clamp(3rem, 8vw, 5.8rem); max-width: 14ch; margin: 0 auto; }
+    .cta-band > p { max-width: 34rem; margin: 1rem auto 1.8rem; color: #ffd4c8; font-family: var(--serif); font-size: 1.2rem; font-style: italic; }
+    .forms {
+      display: grid; gap: 1.15rem; margin-top: 2.4rem; text-align: left; max-width: 980px; margin-left: auto; margin-right: auto;
+    }
+    .form-card {
+      background: rgba(12,9,8,0.32); border: 1px solid rgba(255,255,255,0.1);
+      padding: 1.6rem 1.5rem 1.7rem;
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      min-width: 0;
+    }
+    .form-card h3 { font-size: 2.1rem; margin-bottom: 0.4rem; }
+    .form-card .hint { color: #ffd4c8; font-size: 0.92rem; margin: 0 0 1.15rem; line-height: 1.5; }
+    label { display: grid; gap: 0.35rem; font-size: 0.72rem; margin-bottom: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: #ffd9d0; }
+    input, select, textarea {
+      min-height: 48px; border-radius: 2px; border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(12,9,8,0.5); color: #fff; padding: 0.7rem 0.9rem; font-size: 1rem;
+      letter-spacing: 0; text-transform: none; transition: border-color 0.3s var(--ease), background 0.3s var(--ease);
+      width: 100%;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none; border-color: var(--gold); background: rgba(12,9,8,0.7);
+    }
+    input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+    }
+    textarea { min-height: 92px; resize: vertical; }
+    .err { color: #ffd0a8; font-size: 0.75rem; min-height: 1.1em; letter-spacing: 0.02em; text-transform: none; }
+    .success {
+      display: none; padding: 1.2rem; background: rgba(12,9,8,0.55);
+      border: 1px solid var(--gold); color: var(--cream);
+    }
+    .success.show { display: block; }
+    .form-card.sent form { display: none; }
+    footer.site {
+      padding: 2.8rem max(clamp(1.2rem, 5vw, 4.5rem), env(safe-area-inset-left, 0px)) 7.2rem;
+      padding-right: max(clamp(1.2rem, 5vw, 4.5rem), env(safe-area-inset-right, 0px));
+      border-top: 1px solid var(--line);
+      display: grid; gap: 1.4rem;
+    }
+    footer.site a { color: var(--gold); text-decoration: none; }
+    .foot-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1.4rem; }
+    .socials { display: flex; gap: 1.4rem; flex-wrap: wrap; font-size: 0.9rem; }
+    .sticky-order {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+      display: flex; gap: 0.5rem; padding: 0.65rem max(0.85rem, env(safe-area-inset-right, 0px)) calc(0.65rem + var(--safe-bottom)) max(0.85rem, env(safe-area-inset-left, 0px));
+      background: rgba(12,9,8,0.94);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      border-top: 1px solid var(--line);
+    }
+    .sticky-order .btn { flex: 1; }
+    @media (hover: hover) and (pointer: fine) {
+      nav.desk a:not(.btn):hover { opacity: 1; color: var(--gold); }
+      nav.desk a:not(.btn):hover::after { right: 0; }
+      .btn-primary:hover { background: var(--tomato-hot); transform: translateY(-2px); box-shadow: 0 16px 36px rgba(194, 59, 34, 0.45); }
+      .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+      .btn-gold:hover { background: #f0cc6e; transform: translateY(-2px); }
+      .mobile-nav a:hover { color: var(--gold); }
+      .pie:hover { transform: translateY(-4px); box-shadow: 0 24px 48px rgba(58, 42, 34, 0.12); }
+      .pie:hover img { transform: scale(1.07); }
+      .step:hover img { transform: scale(1.06); }
+      .story-photo:hover img { transform: scale(1.07); }
+      .info-list a:hover { color: var(--gold); }
+      footer.site a:hover { text-decoration: underline; }
+    }
+    @media (min-width: 720px) {
+      nav.desk { display: flex; }
+      .burger { display: none; }
+      .scroll-cue { display: block; }
+      .story { grid-template-columns: 1.08fr 0.92fr; gap: 4rem; }
+      .steps { grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+      .step img { height: 260px; }
+      .pizzas { grid-template-columns: repeat(2, 1fr); }
+      .pie-feature { grid-column: 1 / -1; grid-template-columns: 1.15fr 0.85fr; align-items: stretch; }
+      .pie-feature img { height: 100%; min-height: 280px; }
+      .pie-feature .pie-body { justify-content: center; padding: 2rem 2.2rem; }
+      .quotes { grid-template-columns: repeat(3, 1fr); }
+      .visit-grid { grid-template-columns: 1.15fr 0.85fr; align-items: stretch; }
+      .forms { grid-template-columns: 1fr 1fr; }
+      footer.site { padding-bottom: 2.8rem; }
+      .sticky-order { display: none; }
+      .score-row { grid-template-columns: 1fr 1fr; max-width: 640px; }
+    }
+    @media (min-width: 1080px) {
+      .pizzas { grid-template-columns: repeat(3, 1fr); }
+      .pie-feature { grid-column: 1 / -1; }
+      .hero-inner { padding-bottom: 5.8rem; }
+      .pie img { height: 270px; }
+    }
+    @media (max-width: 379px) {
+      .hero h1 { font-size: clamp(2.8rem, 16vw, 3.4rem); }
+      .hero-meta span { padding-right: 1rem; margin-right: 1rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .hero-media img, .pie img, .step img, .story-photo img { animation: none !important; transition: none; transform: none; will-change: auto; }
+      .btn, header.site, .mobile-nav, .pie, input, select, textarea { transition: none; }
+      .grain { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text"><strong>American Pizza</strong><span>Da Nang</span></span>
+    </a>
+    <nav class="desk" aria-label="Primary">
+      <a href="#story">Story</a>
+      <a href="#process">Process</a>
+      <a href="#menu">Menu</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#visit">Visit</a>
+      <a class="btn btn-primary" href="#order">Order now</a>
+    </nav>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu">
+      <span></span>
+    </button>
+  </header>
+  <nav class="mobile-nav" id="mobile-nav" hidden aria-label="Mobile">
+    <a href="#story">Story</a>
+    <a href="#process">Process</a>
+    <a href="#menu">Menu</a>
+    <a href="#reviews">Reviews</a>
+    <a href="#visit">Visit</a>
+    <a href="#order">Order now</a>
+    <a href="#reserve">Reserve a table</a>
+  </nav>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero-media">
+        <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=2000&q=80" srcset="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80 800w, https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1400&q=80 1400w, https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=2000&q=80 2000w" sizes="100vw" alt="Close-up of a generously topped pepperoni pizza with blistered crust and melted cheese" width="2000" height="1333" fetchpriority="high" decoding="async">
+        <div class="hero-shade"></div>
+      </div>
+      <div class="hero-inner">
+        <p class="eyebrow">72/9 Nguyễn Văn Thoại · Ngũ Hành Sơn</p>
+        <h1>The stretch.<br>The crunch.<br><em>Home.</em></h1>
+        <p class="hero-lead">Da Nang’s true American pizza — tavern-size pies, three-day dough, imported mozzarella, and toppings that actually cover the crust. Made by Mike from California, with his Vietnamese wife, for people who know what pizza is supposed to feel like.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#order">Order now</a>
+          <a class="btn btn-ghost" href="#visit">Get directions</a>
+          <a class="btn btn-ghost" href="https://food.grab.com/vn/en/" target="_blank" rel="noopener noreferrer">GrabFood</a>
+        </div>
+        <div class="hero-meta">
+          <span><strong>Daily</strong> 2pm–11pm</span>
+          <span><strong>10″ / 14″</strong> American sizes</span>
+          <span><strong>330°C</strong> blistered crust</span>
+          <span><strong>GrabFood</strong> + takeaway</span>
+        </div>
+      </div>
+      <span class="scroll-cue">Scroll</span>
+    </section>
+
+    <section class="story-sec" id="story">
+      <div class="wrap story">
+        <div class="reveal">
+          <p class="sec-kicker">Founder</p>
+          <h2 class="sec-title">Mike left California with a craving he couldn’t find here.</h2>
+          <p>After eighteen years as an electrical engineer, Mike packed up the career and moved to Da Nang with his Vietnamese wife. What he couldn’t pack was a proper American pizza: big, loaded, blistered, with cheese that stretches instead of sitting there polite.</p>
+          <p class="pull">Not a New York slice shop, not an Italian trattoria. A hearty American tavern pie.</p>
+          <p>Local pies were smaller, lighter, and built for a different idea of pizza. So they opened American Pizza — not a New York slice shop, not an Italian trattoria. A hearty American tavern pie, fermented slowly, topped generously, fired hot, and served in a room you actually want to sit in.</p>
+          <p>That’s the whole pitch. Someone who grew up on this food, cooking it the way he remembers it, a few minutes from My Khe Beach.</p>
+        </div>
+        <figure class="story-photo reveal">
+          <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1400&q=80" srcset="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=800&q=80 800w, https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1400&q=80 1400w" sizes="(min-width: 720px) 42vw, 100vw" alt="Hands working dough and sauce in a working kitchen" width="1400" height="933" loading="lazy" decoding="async">
+          <figcaption>From California kitchens to Ngũ Hành Sơn</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="process" id="process">
+      <div class="wrap">
+        <p class="sec-kicker reveal">The process</p>
+        <h2 class="sec-title reveal">Three days in the dough. Seconds in a 330°C oven.</h2>
+        <p class="lede reveal">No wood-fired folklore. Just fermentation, heat, and toppings that show up. This is how an American pie gets its chew, its blister, and that audible crunch when you fold a slice.</p>
+        <div class="steps">
+          <article class="step reveal">
+            <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1000&q=80" alt="Flour-dusted fermented dough balls ready for stretching" width="1000" height="667" loading="lazy" decoding="async">
+            <div class="step-body">
+              <div class="step-num">01</div>
+              <h3>Three-day ferment</h3>
+              <p>Dough rests long enough to taste like something — sourdough-adjacent flavor, tender crumb, a crust that stands up to sauce and cheese instead of collapsing under them.</p>
+            </div>
+          </article>
+          <article class="step reveal">
+            <img src="https://images.unsplash.com/photo-1518977956812-cd3d11e0d496?auto=format&fit=crop&w=1000&q=80" alt="Fresh pizza toppings and herbs prepared daily" width="1000" height="667" loading="lazy" decoding="async">
+            <div class="step-body">
+              <div class="step-num">02</div>
+              <h3>Sauce, cheese, load</h3>
+              <p>Homemade sauce with oregano, thyme, and rosemary. Imported mozzarella blend that pulls. Toppings piled the American way — you should not have to hunt for the pepperoni.</p>
+            </div>
+          </article>
+          <article class="step reveal">
+            <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=1000&q=80" alt="Blistered pizza crust with bubbling melted cheese fresh from a high-heat oven" width="1000" height="667" loading="lazy" decoding="async">
+            <div class="step-body">
+              <div class="step-num">03</div>
+              <h3>330°C finish</h3>
+              <p>Ovens run hot so the edge blisters and the center stays stretchy. Crispy, not cracker. Soft, not soggy. The sound when you bite is the whole point.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="menu-sec" id="menu">
+      <div class="wrap">
+        <p class="sec-kicker reveal">Menu</p>
+        <h2 class="sec-title reveal">Named pies. American sizes. Honest prices.</h2>
+        <p class="menu-intro reveal">Medium 10″ / 25cm. Large 14″ / 35cm. Built to share — or not. Half &amp; Half if the table can’t agree. 10% off dine-in when you reserve.</p>
+        <div class="pizzas">
+          <article class="pie reveal">
+            <div class="pie-media">
+              <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=900&q=80" alt="Cheese pizza with a thick blanket of melted mozzarella" width="900" height="600" loading="lazy" decoding="async" sizes="(min-width: 1080px) 33vw, (min-width: 720px) 50vw, 100vw">
+            </div>
+            <div class="pie-body">
+              <h3>Cheese</h3>
+              <p>House-blended imported mozzarella. The pull is the product.</p>
+              <div class="prices"><span class="tag">M 10″ <strong>160k</strong></span><span class="tag">L 14″ <strong>220k</strong></span></div>
+            </div>
+          </article>
+          <article class="pie reveal">
+            <div class="pie-media">
+              <img src="https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=900&q=80" alt="Pepperoni pizza with curled cups of pepperoni and golden cheese" width="900" height="600" loading="lazy" decoding="async" sizes="(min-width: 1080px) 33vw, (min-width: 720px) 50vw, 100vw">
+            </div>
+            <div class="pie-body">
+              <h3>Pepperoni</h3>
+              <p>The American classic, loaded — not dotted.</p>
+              <div class="prices"><span class="tag">M 10″ <strong>185k</strong></span><span class="tag">L 14″ <strong>255k</strong></span></div>
+            </div>
+          </article>
+          <article class="pie reveal">
+            <div class="pie-media">
+              <img src="https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=900&q=80" alt="Meat lover pizza with pepperoni, ham and sausage" width="900" height="600" loading="lazy" decoding="async" sizes="(min-width: 1080px) 33vw, (min-width: 720px) 50vw, 100vw">
+            </div>
+            <div class="pie-body">
+              <h3>Meat Lover</h3>
+              <p>Pepperoni, ham, and meatball sausage. No polite portions.</p>
+              <div class="prices"><span class="tag">M 10″ <strong>245k</strong></span><span class="tag">L 14″ <strong>340k</strong></span></div>
+            </div>
+          </article>
+          <article class="pie reveal">
+            <div class="pie-media">
+              <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=900&q=80" alt="Hawaiian-style pizza with ham and pineapple on a golden crust" width="900" height="600" loading="lazy" decoding="async" sizes="(min-width: 1080px) 33vw, (min-width: 720px) 50vw, 100vw">
+            </div>
+            <div class="pie-body">
+              <h3>Hawaiian</h3>
+              <p>Ham and pineapple. Sweet-salt, the way the mainland does it.</p>
+              <div class="prices"><span class="tag">M 10″ <strong>190k</strong></span><span class="tag">L 14″ <strong>265k</strong></span></div>
+            </div>
+          </article>
+          <article class="pie reveal">
+            <div class="pie-media">
+              <img src="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=900&q=80" alt="Canadian pizza with ham, bell peppers and mushrooms" width="900" height="600" loading="lazy" decoding="async" sizes="(min-width: 1080px) 33vw, (min-width: 720px) 50vw, 100vw">
+            </div>
+            <div class="pie-body">
+              <h3>Canadian</h3>
+              <p>Ham, bell peppers, mushrooms. A supper pie.</p>
+              <div class="prices"><span class="tag">M 10″ <strong>200k</strong></span><span class="tag">L 14″ <strong>275k</strong></span></div>
+            </div>
+          </article>
+          <article class="pie reveal">
+            <div class="pie-media">
+              <img src="https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&w=900&q=80" alt="Vegetarian pizza with mushrooms, onions, peppers, olives and pineapple" width="900" height="600" loading="lazy" decoding="async" sizes="(min-width: 1080px) 33vw, (min-width: 720px) 50vw, 100vw">
+            </div>
+            <div class="pie-body">
+              <h3>Vegetarian</h3>
+              <p>Mushrooms, onions, bell peppers, black olives, pineapple.</p>
+              <div class="prices"><span class="tag">M 10″ <strong>190k</strong></span><span class="tag">L 14″ <strong>265k</strong></span></div>
+            </div>
+          </article>
+          <article class="pie pie-feature reveal">
+            <div class="pie-media">
+              <img src="https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=1200&q=80" alt="Split pizza showing two different topping combinations" width="900" height="600" loading="lazy" decoding="async" sizes="(min-width: 720px) 55vw, 100vw">
+            </div>
+            <div class="pie-body">
+              <h3>Half &amp; Half</h3>
+              <p>Any two pies on one crust. Peace at the table.</p>
+              <div class="prices"><span class="tag">From <strong>200k / 280k</strong></span></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="reviews" id="reviews">
+      <div class="wrap">
+        <p class="sec-kicker reveal">Proof</p>
+        <h2 class="sec-title reveal">People who miss home tend to say so.</h2>
+        <div class="score-row reveal">
+          <div class="score"><b>4.9</b><span>Google · 264 reviews</span></div>
+          <div class="score"><b>5.0</b><span>TripAdvisor · 21+ reviews</span></div>
+        </div>
+        <div class="quotes">
+          <blockquote class="q reveal">
+            <p>“Best tasting pizza in all of Vietnam.”</p>
+            <cite>Google review</cite>
+          </blockquote>
+          <blockquote class="q reveal">
+            <p>“Crispy crust cooked to perfection. Stretchy cheese.”</p>
+            <cite>Google review</cite>
+          </blockquote>
+          <blockquote class="q reveal">
+            <p>“A taste of home. The real deal — best pizza in Danang.”</p>
+            <cite>TripAdvisor review</cite>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <section class="visit" id="visit">
+      <div class="wrap">
+        <p class="sec-kicker reveal">Location</p>
+        <h2 class="sec-title reveal">Minutes from My Khe. Easy to park. Hard to leave hungry.</h2>
+        <div class="visit-grid">
+          <div class="map-card reveal">
+            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=80" alt="Sunlit beach near Da Nang, a few minutes from the pizzeria" width="1400" height="900" loading="lazy" decoding="async">
+            <div class="map-overlay">
+              <strong>72/9 Nguyễn Văn Thoại, Ngũ Hành Sơn, Da Nang</strong>
+              <p style="margin:0.35rem 0 0.9rem;color:#cbb9a8;font-size:0.92rem;">Indoor air-conditioned dining, outdoor seats, free parking.</p>
+              <a class="btn btn-gold" href="https://maps.google.com/?q=72/9+Nguyen+Van+Thoai+Ngu+Hanh+Son+Da+Nang" target="_blank" rel="noopener noreferrer">Open in Google Maps</a>
+            </div>
+          </div>
+          <dl class="info-list reveal">
+            <div>
+              <dt>Hours</dt>
+              <dd>Daily, 2:00pm – 11:00pm</dd>
+            </div>
+            <div>
+              <dt>Phone</dt>
+              <dd><a href="tel:+84905759986">+84 90 575 99 86</a></dd>
+            </div>
+            <div>
+              <dt>How to eat</dt>
+              <dd>Dine-in · takeaway · GrabFood · website order</dd>
+            </div>
+            <div>
+              <dt>Promo</dt>
+              <dd>10% off dine-in when you reserve a table</dd>
+            </div>
+            <div>
+              <dt>Parking</dt>
+              <dd>Free parking on site</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-band" id="order">
+      <h2>Hungry enough to do something about it?</h2>
+      <p>Call it in, send an order request, or lock a table. We’ll confirm by phone. GrabFood if you’re already on the sofa.</p>
+      <div class="hero-actions" style="justify-content:center;">
+        <a class="btn btn-gold" href="tel:+84905759986">Call +84 90 575 99 86</a>
+        <a class="btn btn-ghost" href="#reserve">Reserve a table</a>
+        <a class="btn btn-ghost" href="https://food.grab.com/vn/en/" target="_blank" rel="noopener noreferrer">Order on GrabFood</a>
+      </div>
+      <div class="forms">
+        <div class="form-card" id="order-card">
+          <h3>Order now</h3>
+          <p class="hint">Pickup or delivery request. We confirm by phone — no silent checkout.</p>
+          <div class="success" role="status" aria-live="polite" tabindex="-1"></div>
+          <form id="order-form" novalidate>
+            <label for="order-name">Full name
+              <input id="order-name" name="name" autocomplete="name" required aria-describedby="order-name-err">
+              <span class="err" id="order-name-err"></span>
+            </label>
+            <label for="order-phone">Phone
+              <input id="order-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="+84 …" aria-describedby="order-phone-err">
+              <span class="err" id="order-phone-err"></span>
+            </label>
+            <label for="order-method">Pickup or delivery
+              <select id="order-method" name="method" required aria-describedby="order-method-err">
+                <option value="">Choose</option>
+                <option>Pickup at 72/9 Nguyễn Văn Thoại</option>
+                <option>Delivery (we’ll confirm area)</option>
+                <option>GrabFood — I’ll order there</option>
+              </select>
+              <span class="err" id="order-method-err"></span>
+            </label>
+            <label for="order-notes">What are you craving?
+              <textarea id="order-notes" name="notes" placeholder="e.g. Large Meat Lover + Medium Hawaiian"></textarea>
+            </label>
+            <button class="btn btn-gold" type="submit">Send my order request</button>
+          </form>
+        </div>
+        <div class="form-card" id="reserve">
+          <h3>Reserve a table</h3>
+          <p class="hint">10% off dine-in. Indoor AC or outdoor seating. We’ll hold the table.</p>
+          <div class="success" role="status" aria-live="polite" tabindex="-1"></div>
+          <form id="reserve-form" novalidate>
+            <label for="reserve-name">Full name
+              <input id="reserve-name" name="name" autocomplete="name" required aria-describedby="reserve-name-err">
+              <span class="err" id="reserve-name-err"></span>
+            </label>
+            <label for="reserve-phone">Phone
+              <input id="reserve-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required aria-describedby="reserve-phone-err">
+              <span class="err" id="reserve-phone-err"></span>
+            </label>
+            <label for="reserve-date">Date
+              <input id="reserve-date" name="date" type="date" required autocomplete="off" aria-describedby="reserve-date-err">
+              <span class="err" id="reserve-date-err"></span>
+            </label>
+            <label for="reserve-party">Party size
+              <select id="reserve-party" name="party" required aria-describedby="reserve-party-err">
+                <option value="">How many</option>
+                <option>2</option><option>3</option><option>4</option><option>5</option><option>6+</option>
+              </select>
+              <span class="err" id="reserve-party-err"></span>
+            </label>
+            <button class="btn btn-gold" type="submit">Request the table</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site">
+    <div class="foot-top">
+      <div>
+        <strong>American Pizza</strong> · americanpizza.vn<br>
+        72/9 Nguyễn Văn Thoại, Ngũ Hành Sơn, Da Nang<br>
+        Run by Mike and his wife. Daily 2pm–11pm.
+      </div>
+      <div class="socials">
+        <a href="https://www.tiktok.com/@pizzamy.vn" target="_blank" rel="noopener noreferrer">TikTok @pizzamy.vn</a>
+        <a href="https://www.facebook.com/p/American-Pizza-61578195429921/" target="_blank" rel="noopener noreferrer">Facebook</a>
+        <a href="tel:+84905759986">+84 90 575 99 86</a>
+      </div>
+    </div>
+    <p style="color:var(--muted);font-size:0.85rem;margin:0;">Authentic American tavern pizza in Da Nang. Not a chain. Not Italian. Just the pie.</p>
+  </footer>
+
+  <div class="sticky-order">
+    <a class="btn btn-primary" href="#order">Order now</a>
+    <a class="btn btn-ghost" href="#visit">Directions</a>
+  </div>
+
+  <script>
+    (function () {
+      var burger = document.querySelector(".burger");
+      var drawer = document.getElementById("mobile-nav");
+      var header = document.querySelector("header.site");
+      var main = document.getElementById("main");
+      var footer = document.querySelector("footer.site");
+      var sticky = document.querySelector(".sticky-order");
+
+      function setInert(el, on) {
+        if (!el) return;
+        el.inert = on;
+      }
+
+      function setOpen(open) {
+        drawer.classList.toggle("open", open);
+        drawer.hidden = !open;
+        burger.setAttribute("aria-expanded", String(open));
+        burger.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+        if (open) {
+          drawer.setAttribute("role", "dialog");
+          drawer.setAttribute("aria-modal", "true");
+        } else {
+          drawer.removeAttribute("role");
+          drawer.removeAttribute("aria-modal");
+        }
+        document.body.style.overflow = open ? "hidden" : "";
+        setInert(main, open);
+        setInert(footer, open);
+        setInert(sticky, open);
+        if (open) {
+          var first = drawer.querySelector("a");
+          if (first) first.focus();
+        }
+      }
+
+      burger.addEventListener("click", function () {
+        setOpen(!drawer.classList.contains("open"));
+      });
+      drawer.querySelectorAll("a").forEach(function (a) {
+        a.addEventListener("click", function () { setOpen(false); });
+      });
+      document.addEventListener("keydown", function (e) {
+        var isOpen = drawer.classList.contains("open");
+        if (e.key === "Escape" && isOpen) {
+          setOpen(false);
+          burger.focus();
+        }
+        if (e.key === "Tab" && isOpen) {
+          var links = Array.prototype.slice.call(drawer.querySelectorAll("a"));
+          var cycle = [burger].concat(links);
+          var i = cycle.indexOf(document.activeElement);
+          if (e.shiftKey) {
+            if (i <= 0) { e.preventDefault(); cycle[cycle.length - 1].focus(); }
+          } else if (i === cycle.length - 1 || i === -1) {
+            e.preventDefault();
+            cycle[0].focus();
+          }
+        }
+      });
+
+      var onScroll = function () {
+        header.classList.toggle("scrolled", window.scrollY > 24);
+      };
+      onScroll();
+      window.addEventListener("scroll", onScroll, { passive: true });
+
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!reduce && "IntersectionObserver" in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) {
+              e.target.classList.add("in");
+              io.unobserve(e.target);
+            }
+          });
+        }, { threshold: 0.16, rootMargin: "0px 0px -8% 0px" });
+        document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
+      } else {
+        document.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); });
+      }
+
+      var dateInput = document.getElementById("reserve-date");
+      if (dateInput) {
+        var today = new Date();
+        var m = String(today.getMonth() + 1).padStart(2, "0");
+        var d = String(today.getDate()).padStart(2, "0");
+        dateInput.min = today.getFullYear() + "-" + m + "-" + d;
+      }
+
+      function validPhone(v) { return /[0-9]{8,}/.test(v.replace(/\s+/g, "")); }
+      function handleForm(form, card, message) {
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          var ok = true;
+          var firstBad = null;
+          form.querySelectorAll("[required]").forEach(function (field) {
+            var err = field.parentElement.querySelector(".err");
+            var bad = !field.value.trim() || (field.name === "phone" && !validPhone(field.value));
+            if (err) err.textContent = bad ? (field.name === "phone" ? "Enter a working phone number." : "This is required.") : "";
+            field.setAttribute("aria-invalid", bad ? "true" : "false");
+            if (bad) {
+              ok = false;
+              if (!firstBad) firstBad = field;
+            }
+          });
+          if (!ok) {
+            if (firstBad) firstBad.focus();
+            return;
+          }
+          var method = form.querySelector("[name='method']");
+          if (method && /GrabFood/i.test(method.value)) {
+            window.open("https://food.grab.com/vn/en/", "_blank", "noopener");
+          }
+          card.classList.add("sent");
+          var box = card.querySelector(".success");
+          box.textContent = message;
+          box.classList.add("show");
+          box.focus();
+        });
+      }
+      handleForm(
+        document.getElementById("order-form"),
+        document.getElementById("order-card"),
+        "Order request received. We’ll call you shortly to confirm pies, size, and timing."
+      );
+      handleForm(
+        document.getElementById("reserve-form"),
+        document.getElementById("reserve"),
+        "Table request received. We’ll confirm your reservation by phone — 10% off dine-in."
+      );
+    })();
+  </script>
+</body>
+</html>
