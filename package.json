@@ -1,0 +1,8 @@
+{
+  "name": "ws-american-pizza",
+  "private": true,
+  "version": "1.0.0",
+  "description": "American Pizza Da Nang, single-page site with a dependency-free static server",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}

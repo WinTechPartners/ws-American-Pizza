@@ -1,0 +1,5 @@
+Contact: tel:+84-90-575-99-86
+Contact: https://www.facebook.com/p/American-Pizza-61578195429921/
+Preferred-Languages: en, vi
+Expires: 2027-09-06T00:00:00.000Z
+Canonical: https://americanpizza.vn/.well-known/security.txt
